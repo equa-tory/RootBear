@@ -112,7 +112,10 @@ public class Wobble : MonoBehaviour
         else
         {
             if(factor>0)factor-=factorDec*Time.deltaTime;
-            else factor =0;
+            else {
+                dps.Stop();
+                factor = 0;
+            }
         }
         if(vara.x>0)vara.x-=Time.deltaTime*40;
             else vara.x = 0;
@@ -163,10 +166,10 @@ public class Wobble : MonoBehaviour
 
                     GameManager.Instance.NextBear(0);
                     brk = true;
-                    dps.gameObject.SetActive(false);
+                    dps.Stop();
                     act = false;
                 } 
-                dps.Stop();
+                // dps.Stop();
                 int salary = 0;
 
                 if(fi>reqFi+reqHelp) // Lose
