@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class Wobble : MonoBehaviour
 {
+    public float fiSpeed = 1f;
     public float adder;
-    public float startOff;
-    public float off;
 
     Renderer rend;
     Vector3 lastPos;
@@ -30,6 +29,8 @@ public class Wobble : MonoBehaviour
     public float fi = -1f;
     public float factor;
     public float factorDec = 3f;
+    public float maxFactorDec = 2f;
+    public float minFactorDec = .5f;
     public Vector3 vara;
     public Animator anim;
     public ParticleSystem dps;
@@ -46,12 +47,18 @@ public class Wobble : MonoBehaviour
 
     public AudioSource waterSource;
 
+    public Transform reqLine;
+    public float maxReq = 0.7f;
+    public float minReq = -0.7f;
+
 
     // Use this for initialization
     void Start()
     {
         rend = GetComponent<Renderer>();
-        off = startOff;
+        reqFi = Random.Range(maxReq,minReq);
+        reqLine.transform.localPosition = new Vector3(0,0,0.01f*reqFi);
+        factorDec = Random.Range(minFactorDec,maxFactorDec);
     }
     private void Update()
     {
@@ -87,7 +94,7 @@ public class Wobble : MonoBehaviour
 
         if(factor>0)
         {
-            fi += factor*Time.deltaTime;
+            fi += factor*Time.deltaTime*fiSpeed;
             rend.material.SetFloat("_Fill", fi);
         }
         if(act)
@@ -111,7 +118,41 @@ public class Wobble : MonoBehaviour
         }
         else
         {
-            if(factor>0)factor-=factorDec*Time.deltaTime;
+            if(!brk && factor <= 0)
+            {
+                int salary = 0;
+
+                if (fi > reqFi + reqHelp) // Lose
+                {
+                    Debug.Log("Lose");
+                    // salary = Random.Range(1,3);
+                    GameManager.Instance.NextBear(0);
+                    brk = true;
+                }
+                else if (fi >= reqFi + reqCoolHelp) // 3/3
+                {
+                    Debug.Log("3/3");
+                    salary = Random.Range(1, 4);
+                    GameManager.Instance.NextBear(salary);
+                    brk = true;
+                }
+                else if (fi >= reqFi - reqCoolHelp) // 2/3
+                {
+                    Debug.Log("2/3");
+                    salary = Random.Range(4, 8);
+                    GameManager.Instance.NextBear(salary);
+                    brk = true;
+                }
+                else if (fi >= reqFi - reqHelp) // 1/3
+                {
+                    Debug.Log("1/3");
+                    salary = Random.Range(1, 4);
+                    GameManager.Instance.NextBear(salary);
+                    brk = true;
+                }
+            }
+
+            if (factor>0)factor-=factorDec*Time.deltaTime;
             else {
                 dps.Stop();
                 factor = 0;
@@ -170,28 +211,7 @@ public class Wobble : MonoBehaviour
                     act = false;
                 } 
                 // dps.Stop();
-                int salary = 0;
-
-                if(fi>reqFi+reqHelp) // Lose
-                {
-                    salary = Random.Range(1,3);
-                    GameManager.Instance.NextBear(salary);
-                }
-                else if(fi>=reqFi+reqCoolHelp) // 3/3
-                {
-                    salary = Random.Range(3,6);
-                    GameManager.Instance.NextBear(salary);
-                }
-                else if(fi>=reqFi-reqCoolHelp) // 2/3
-                {
-                    salary = Random.Range(6,15);
-                    GameManager.Instance.NextBear(salary);
-                }
-                else if(fi>=reqFi-reqHelp) // 1/3
-                {
-                    salary = Random.Range(3,6);
-                    GameManager.Instance.NextBear(salary);
-                }
+                
             }
         }
     }

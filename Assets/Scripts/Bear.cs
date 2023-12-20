@@ -21,7 +21,6 @@ public class Bear : MonoBehaviour
     {
         sr.GetComponent<Billboard>().target = cam.transform;
         wobble.anim = anim;
-        wobble.factorDec = Random.Range(.5f,2f);
         wobble.dps = dps;
         wobble.waterSource = waterSource;
     }
