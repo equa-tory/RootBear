@@ -43,8 +43,8 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SnowScale: 80
-    - _VertexOffset: 0.004
+    - _SnowScale: 25
+    - _VertexOffset: 0.005
     m_Colors:
     - _SnowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_BuildTextureStacks: []

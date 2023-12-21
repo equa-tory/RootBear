@@ -21,7 +21,7 @@ public class FadeManager : MonoBehaviour
     }   
     
     private void Start() {
-    
+
     } 
     
     private void Update() {

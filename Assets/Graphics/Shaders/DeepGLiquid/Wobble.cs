@@ -78,7 +78,7 @@ public class Wobble : MonoBehaviour
         rend.material.SetFloat("_WobbleZ", wobbleAmountZ);
 
         // velocity
-        velocity = (lastPos - transform.position) / Time.deltaTime;
+        if(Time.deltaTime > 0) velocity = (lastPos - transform.position) / Time.deltaTime;
         velocity += vara;
         angularVelocity = transform.rotation.eulerAngles - lastRot;
         // Debug.Log(velocity);
@@ -175,7 +175,7 @@ public class Wobble : MonoBehaviour
                 ps.gameObject.SetActive(true);
                 
                 waterSource.Stop();
-                GameManager.Instance.NextBear(Random.Range(1,3));
+                GameManager.Instance.NextBear(0);
             }
         }
         // if (Input.GetKeyDown(KeyCode.T)) // Debug
@@ -184,7 +184,7 @@ public class Wobble : MonoBehaviour
         //     rend.material.SetFloat("_Fill", fi);
         // }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !brk)
+        if (Input.GetKeyDown(KeyCode.Space) && !brk && !GameManager.Instance.inMenu)
         {
             act = !act;
             anim.SetBool("On",act);
