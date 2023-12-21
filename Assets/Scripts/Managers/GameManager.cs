@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Dan.Main;
 using UnityEngine;
 using Dan.Main;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
@@ -42,8 +44,132 @@ public class GameManager : MonoBehaviour
     public Clock clock;
     private bool brk;
 
-    private string publiclLeaderboardKey = "8f554816f8f5d8cafef3913cadfa50289586fac9551ffe201f89b4f369f2f297"; 
+    private string publiclLeaderboardKey = "8f554816f8f5d8cafef3913cadfa50289586fac9551ffe201f89b4f369f2f297";
+
+
+    [Header("Settings")]
+    [SerializeField] private GameObject settingsGO;
+    [SerializeField] private AudioMixer mixer;
+    [SerializeField] private Slider s_master;
+    [SerializeField] private Slider s_fx;
+    [SerializeField] private Slider s_music;
+    [SerializeField] private Toggle t_pixelation;
+    [SerializeField] private Toggle t_postprocess;
+    [SerializeField] private List<GameObject> postPrecesses = new List<GameObject>();
+    [SerializeField] private GameObject pixImage;
+    [SerializeField] private GameObject pixCam;
+    [SerializeField] private GameObject normCam;
+
+    //-------------------------------------------------------------------------------------------------------------------
+
+    private void Load()
+    {
+        if(PlayerPrefs.HasKey("s_master"))
+        {
+            float _v = PlayerPrefs.GetFloat("s_master");
+            s_master.value = _v;
+            mixer.SetFloat("MasterVolume",_v);
+        }
+        else
+        {
+            float _v = 0.75f;
+            PlayerPrefs.SetFloat("s_master",_v);
+            mixer.SetFloat("MasterVolume",_v);
+        }
     
+        if(PlayerPrefs.HasKey("s_fx"))
+        {
+            float _v = PlayerPrefs.GetFloat("s_fx");
+            s_fx.value = _v;
+            mixer.SetFloat("FxVolume",_v);
+        }
+        else
+        {
+            float _v = 0.75f;
+            PlayerPrefs.SetFloat("s_fx",_v);
+            mixer.SetFloat("FxVolume",_v);
+        }
+    
+        if(PlayerPrefs.HasKey("s_music"))
+        {
+            float _v = PlayerPrefs.GetFloat("s_music");
+            s_music.value = _v;
+            mixer.SetFloat("MusicVolume",_v);
+        }
+        else
+        {
+            float _v = 0.75f;
+            PlayerPrefs.SetFloat("s_music",_v);
+            mixer.SetFloat("MusicVolume",_v);
+        }
+    
+        if(PlayerPrefs.HasKey("t_postprocess"))
+        {
+            bool _v = (PlayerPrefs.GetInt("t_postprocess") != 0);
+            t_postprocess.isOn = _v;
+            foreach(GameObject p in postPrecesses) p.SetActive(_v);
+        }
+        else
+        {
+            bool _v = true;
+            PlayerPrefs.SetInt("t_postprocess", (_v ? 1 : 0));
+            foreach(GameObject p in postPrecesses) p.SetActive(_v);
+        }
+
+        if(PlayerPrefs.HasKey("t_pixelation"))
+        {
+            bool _v = (PlayerPrefs.GetInt("t_pixelation") != 0);
+            t_pixelation.isOn = _v;
+            normCam.SetActive(!_v);
+            pixCam.SetActive(_v);
+            pixImage.SetActive(_v);
+        }
+        else
+        {
+            bool _v = true;
+            PlayerPrefs.SetInt("t_pixelation", (_v ? 1 : 0));
+            normCam.SetActive(!_v);
+            pixCam.SetActive(_v);
+            pixImage.SetActive(_v);
+        }
+    }
+
+    private void Save()
+    {
+        PlayerPrefs.SetFloat("s_master",s_master.value);
+        PlayerPrefs.SetFloat("s_fx",s_fx.value);
+        PlayerPrefs.SetFloat("s_music",s_music.value);
+        PlayerPrefs.SetInt("t_postprocess", (t_postprocess.isOn ? 1 : 0));
+        PlayerPrefs.SetInt("t_pixelation", (t_pixelation.isOn ? 1 : 0));
+    }
+
+    public void S_Master(float _v)
+    {
+        mixer.SetFloat("MasterVolume",_v);
+        Save();
+    }
+    public void S_FX(float _v)
+    {
+        mixer.SetFloat("FxVolume",_v);
+        Save();
+    }
+    public void S_Music(float _v)
+    {
+        mixer.SetFloat("MusicVolume",_v);
+        Save();
+    }
+    public void T_PP(bool _v)
+    {
+        foreach(GameObject p in postPrecesses) p.SetActive(_v);
+        Save();
+    }
+    public void T_Pix(bool _v)
+    {
+        normCam.SetActive(!_v);
+        pixCam.SetActive(_v);
+        pixImage.SetActive(_v);
+        Save();
+    }
     
     //-------------------------------------------------------------------------------------------------------------------
     
@@ -52,6 +178,7 @@ public class GameManager : MonoBehaviour
     }   
     
     private void Start() {
+        Load();
         NextBear(0);
 
         string nickname = "";
@@ -80,7 +207,7 @@ public class GameManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if(lbGO.active)
+            if(lbGO.active || settingsGO.active)
             {
                 B_Back();
                 return;
@@ -98,6 +225,11 @@ public class GameManager : MonoBehaviour
     
     //-------------------------------------------------------------------------------------------------------------------
     
+    public void RevealInExplorer()
+    {
+        Application.OpenURL("file://" + Application.persistentDataPath + "/Music/");
+    }
+
     public void B_Continue()
     {
         if(clock.timer<=0) 
@@ -124,9 +256,14 @@ public class GameManager : MonoBehaviour
     {
         GetLeaderboard();
     }
+    public void B_Settings()
+    {
+        settingsGO.SetActive(true);
+    }
     public void B_Back()
     {
         lbGO.SetActive(false);
+        settingsGO.SetActive(false);
     }
     public void B_Exit()
     {

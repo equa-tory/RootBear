@@ -18,6 +18,7 @@ public class Clock : MonoBehaviour
     //-------------------------------------------------------------------------------------------------------------------
     
     private void Start() {
+
         StartCoroutine(Tick());
 
         timer = startTime;
