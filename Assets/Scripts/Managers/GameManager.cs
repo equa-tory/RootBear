@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            float _v = 0.75f;
+            float _v = -20f;
             PlayerPrefs.SetFloat("s_master",_v);
             mixer.SetFloat("MasterVolume",_v);
         }
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            float _v = 0.75f;
+            float _v = -30f;
             PlayerPrefs.SetFloat("s_fx",_v);
             mixer.SetFloat("FxVolume",_v);
         }
@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            float _v = 0.75f;
+            float _v = -20f;
             PlayerPrefs.SetFloat("s_music",_v);
             mixer.SetFloat("MusicVolume",_v);
         }
@@ -106,6 +106,7 @@ public class GameManager : MonoBehaviour
         if(PlayerPrefs.HasKey("t_postprocess"))
         {
             bool _v = (PlayerPrefs.GetInt("t_postprocess") != 0);
+            print(_v);
             t_postprocess.isOn = _v;
             foreach(GameObject p in postPrecesses) p.SetActive(_v);
         }
@@ -141,6 +142,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("s_music",s_music.value);
         PlayerPrefs.SetInt("t_postprocess", (t_postprocess.isOn ? 1 : 0));
         PlayerPrefs.SetInt("t_pixelation", (t_pixelation.isOn ? 1 : 0));
+        print(t_postprocess.isOn ? 1 : 0);
     }
 
     public void S_Master(float _v)

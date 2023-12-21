@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class MusicPlayer : MonoBehaviour
 {
@@ -17,11 +19,13 @@ public class MusicPlayer : MonoBehaviour
     public AudioClip audioClip;
     public string soundPath;
 
+    public List<AudioClip> clipsToSave = new List<AudioClip>();
+
     
     //-------------------------------------------------------------------------------------------------------------------
     
     private void Awake() {
-        
+
         if(Instance)
         {
             Destroy(gameObject);
@@ -36,8 +40,21 @@ public class MusicPlayer : MonoBehaviour
     }   
     
     private void Start() {
-    
+
+        print(Application.dataPath);
+        // System.IO.File.Move(Application.dataPath+"Sound/OST/ost1.mp3", 
+        // Application.persistentDataPath+"Music/ost1.mp3");
+
     } 
+
+    [Serializable]
+	class AudioClipSample
+	{
+		public int frequency;
+		public int samples;
+		public int channels;
+		public float[] sample;
+	}
     
     private void Update() {
     

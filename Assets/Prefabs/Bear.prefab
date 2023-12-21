@@ -113,6 +113,7 @@ MonoBehaviour:
   sr: {fileID: 4452010709101761559}
   sprites:
   - {fileID: 21300000, guid: 2eecde7dde9c70e43944f00b951ceab8, type: 3}
+  - {fileID: 21300000, guid: 6a56cf93fa1732f40965dddeb772b913, type: 3}
   wobble: {fileID: 4511301159347851882}
   cup: {fileID: 4818095975405735288}
 --- !u!1 &8545535002582562012
