@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using Dan.Main;
 using UnityEngine;
@@ -229,6 +230,7 @@ public class GameManager : MonoBehaviour
     
     public void RevealInExplorer()
     {
+        if(!Directory.Exists(Application.persistentDataPath + "/Music/")) Directory.CreateDirectory(Application.persistentDataPath + "/Music/");
         Application.OpenURL("file://" + Application.persistentDataPath + "/Music/");
     }
 
